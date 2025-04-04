@@ -1,7 +1,7 @@
 export function GridBackground() {
   return (
     <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
-      <div className="absolute inset-0 bg-[#121212]"></div>
+      <div className="absolute inset-0"></div>
       <div
         className="absolute inset-0"
         style={{
