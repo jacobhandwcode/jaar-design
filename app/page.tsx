@@ -19,6 +19,7 @@ import {
   Phone,
   Search,
   X,
+  ShoppingBag,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -257,7 +258,9 @@ export default function Home() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="text-lg md:text-xl text-white/70 mb-10 max-w-2xl mx-auto"
             >
-              We create stunning digital experiences that captivate audiences and drive results. Through our action-oriented, adaptable approaches, we transform ideas into impactful digital solutions.
+              We create stunning digital experiences that captivate audiences
+              and drive results. Through our action-oriented, adaptable
+              approaches, we transform ideas into impactful digital solutions.
             </motion.p>
 
             <motion.div
@@ -314,9 +317,6 @@ export default function Home() {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <span className="text-[#00a5e0] font-medium mb-2 block">
-                About JAAR Design
-              </span>
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
                 We create digital experiences that matter
               </h2>
@@ -480,7 +480,7 @@ export default function Home() {
                   'SEO strategies that boost visibility, drive targeted traffic, and deliver measurable growth.',
               },
               {
-                icon: <Globe className="h-10 w-10" />,
+                icon: <ShoppingBag className="h-10 w-10" />,
                 title: 'E-commerce Solutions',
                 description:
                   'Scalable online stores that drive sales, manage inventory, and provide secure payment processing.',
@@ -554,7 +554,7 @@ export default function Home() {
               className="text-white/70"
             >
               Browse through our portfolio of successful projects that have
-              helped businesses achieve their goals and transform their digital
+              helped clients achieve their goals and transform their digital
               presence.
             </motion.p>
           </div>
@@ -568,9 +568,7 @@ export default function Home() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
                 className="group relative overflow-hidden rounded-xl aspect-square cursor-pointer"
-                onClick={() =>
-                  (window.location.href = `/projects/${project.slug}`)
-                }
+                onClick={() => window.open(project.website, '_blank')}
               >
                 <Image
                   src={project.mainImage || '/placeholder.svg'}
@@ -586,7 +584,8 @@ export default function Home() {
                   </span>
                   <h3 className="text-xl font-bold mb-4">{project.title}</h3>
                   <Link
-                    href={`/projects/${project.slug}`}
+                    href={`${project.website}`}
+                    target="_blank"
                     className="text-white font-medium flex items-center gap-2 w-fit"
                   >
                     View Project{' '}
@@ -597,11 +596,11 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="text-center mt-12">
+          {/* <div className="text-center mt-12">
             <Button className="bg-transparent border border-white/20 hover:bg-white/10 text-white px-8 py-6 text-lg">
               View All Projects
             </Button>
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -640,30 +639,35 @@ export default function Home() {
               viewport={{ once: true }}
               className="text-white/70"
             >
-              Don't just take our word for it. Hear what our clients have to say
-              about their experience working with JAAR Design.
+              Working with JAARDESIGN Group was an absolute pleasure. They built
+              a beautiful, clear, and thoughtfully designed website that
+              perfectly captured the feel and energy I hoped to convey. Their
+              professionalism, creativity, and responsiveness made the
+              experience smooth and enjoyable throughout. I highly recommend
+              them to anyone looking for high-quality, intuitive website design
+              work.
             </motion.p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                name: 'First Last',
-                position: 'CEO, Company Name',
+                name: 'Livana',
+                position: 'Livana, Soul Doula',
                 quote:
                   'Working with JAAR Design was a game-changer for our business. They completely transformed our online presence and helped us connect with a wider audience.',
               },
               {
-                name: 'First Last',
-                position: 'CEO, Company Name',
+                name: 'Leigh Rothschild',
+                position: 'Patent Asset Management',
                 quote:
-                  'The team at JAAR Design understood our vision from day one. They delivered a website that exceeded our expectations and has received fantastic feedback from our users.',
+                  'JAAR Design built a website that perfectly showcases my journey as an inventor. It’s clean, modern, and responsive, making it easy for visitors to explore my patents and projects. The site feels professional yet personal—exactly what I needed to highlight my career achievements in the best light.',
               },
               {
-                name: 'First Last',
-                position: 'CEO, Company Name',
+                name: 'Rosh Lowe',
+                position: 'MicDrop',
                 quote:
-                  'The brand identity JAAR Design created for us perfectly captures our company values. Their strategic approach and attention to detail made all the difference.',
+                  'JAAR Design gave my website a complete makeover, and I couldn’t be happier. They really listened to my ideas and turned them into something professional, clean, and easy for my clients to use. It feels like my business finally has an online home that truly represents me.',
               },
             ].map((testimonial, index) => (
               <motion.div
@@ -757,19 +761,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h3 className="font-bold">Call Us</h3>
-                    <p className="text-white/70">+1 (555) 123-4567</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-[#ef3441]/10 flex items-center justify-center text-[#ef3441]">
-                    <Globe className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold">Visit Us</h3>
-                    <p className="text-white/70">
-                      123 Design Street, Creative City, 10001
-                    </p>
+                    <p className="text-white/70">+1 (305) 733-1160</p>
                   </div>
                 </div>
               </div>
@@ -923,28 +915,10 @@ export default function Home() {
               </div>
 
               <p className="text-white/70 mb-6">
-              Action Oriented, Adaptable Approaches
+                Action Oriented, Adaptable Approaches
               </p>
 
-              <div className="flex gap-4">
-                {/* <a
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#ef3441] transition-colors duration-300"
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 16.84 5.44 20.87 10 21.8V15H8V12H10V9.5C10 7.57 11.57 6 13.5 6H16V9H14C13.45 9 13 9.45 13 10V12H16V15H13V21.95C18.05 21.45 22 17.19 22 12Z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </a> */}
-
+              {/* <div className="flex gap-4">
                 <a
                   href="#"
                   className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#ef3441] transition-colors duration-300"
@@ -1024,51 +998,29 @@ export default function Home() {
                     </g>
                   </svg>
                 </a>
-              </div>
+              </div> */}
             </div>
 
             <div>
               <h3 className="text-lg font-bold mb-6">Services</h3>
               <ul className="space-y-4">
-                <li>
-                  <a
-                    href="#"
-                    className="text-white/70 hover:text-white transition-colors duration-300"
-                  >
-                    Web Design
-                  </a>
+                <li className="text-white/70 hover:text-white transition-colors duration-300">
+                  Web Design
                 </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-white/70 hover:text-white transition-colors duration-300"
-                  >
-                    App Development
-                  </a>
+                <li className="text-white/70 hover:text-white transition-colors duration-300">
+                  Digital Marketing
                 </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-white/70 hover:text-white transition-colors duration-300"
-                  >
-                    UI/UX Design
-                  </a>
+                <li className="text-white/70 hover:text-white transition-colors duration-300">
+                  App Development
                 </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-white/70 hover:text-white transition-colors duration-300"
-                  >
-                    Brand Strategy
-                  </a>
+                <li className="text-white/70 hover:text-white transition-colors duration-300">
+                  Brand Strategy
                 </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-white/70 hover:text-white transition-colors duration-300"
-                  >
-                    Digital Marketing
-                  </a>
+                <li className="text-white/70 hover:text-white transition-colors duration-300">
+                  SEO
+                </li>
+                <li className="text-white/70 hover:text-white transition-colors duration-300">
+                  E-Commerce Solutions
                 </li>
               </ul>
             </div>
