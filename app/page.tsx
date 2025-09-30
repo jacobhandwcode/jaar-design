@@ -29,6 +29,8 @@ import { projects } from '@/lib/projects-data';
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: '', content: '' });
   const { scrollY } = useScroll();
   const heroRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
@@ -50,6 +52,17 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showModal]);
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const scrollTo = (ref: React.RefObject<HTMLDivElement>) => {
@@ -59,8 +72,188 @@ export default function Home() {
     }
   };
 
+  const openModal = (type: 'privacy' | 'terms' | 'cookies') => {
+    const content = {
+      privacy: {
+        title: 'Privacy Policy',
+        content: `
+          <p><strong>Effective Date: 9-30-2025</strong></p>
+          <p>JAARDESIGNLLC ("we", "our", or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you visit our website or use our services.</p>
+          
+          <h3>1. Information We Collect</h3>
+          <p>We may collect the following types of information:</p>
+          <ul>
+            <li><strong>Personal Information:</strong> Name, email address, phone number, and other contact details you provide.</li>
+            <li><strong>Usage Data:</strong> Information about how you use our website, including IP address, browser type, pages visited, and time spent.</li>
+            <li><strong>Cookies and Tracking Technologies:</strong> See our Cookie Policy for more details.</li>
+          </ul>
+          
+          <h3>2. How We Use Your Information</h3>
+          <p>We use your information to:</p>
+          <ul>
+            <li>Provide and manage our services</li>
+            <li>Respond to inquiries and support requests</li>
+            <li>Improve website functionality and user experience</li>
+            <li>Send updates, promotions, and service-related communications</li>
+          </ul>
+          
+          <h3>3. Sharing Your Information</h3>
+          <p>We do not sell or rent your personal information. We may share it with:</p>
+          <ul>
+            <li>Service providers who help us operate our website and deliver services</li>
+            <li>Legal authorities if required by law</li>
+          </ul>
+          
+          <h3>4. Data Security</h3>
+          <p>We implement reasonable security measures to protect your information from unauthorized access, disclosure, or destruction.</p>
+          
+          <h3>5. Your Rights</h3>
+          <p>Depending on your location, you may have rights to:</p>
+          <ul>
+            <li>Access, correct, or delete your personal information</li>
+            <li>Opt out of marketing communications</li>
+            <li>Withdraw consent for data processing</li>
+          </ul>
+          
+          <h3>6. Third-Party Links</h3>
+          <p>Our website may contain links to third-party sites. We are not responsible for their privacy practices.</p>
+          
+          <h3>7. Changes to This Policy</h3>
+          <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated effective date.</p>
+          
+          <h3>8. Contact Us</h3>
+          <p>If you have any questions about this Privacy Policy, please contact us at info@jaardesign.com</p>
+        `,
+      },
+      terms: {
+        title: 'Terms of Service',
+        content: `
+          <p><strong>Effective Date: 9-30-2025</strong></p>
+          <p>Welcome to JAARDESIGNLLC. By accessing or using our website and services, you agree to be bound by the following terms and conditions.</p>
+          
+          <h3>1. Services</h3>
+          <p>JAARDESIGNLLC provides website design, SEO, and social media services and more. All services are subject to availability and may be modified or discontinued at any time.</p>
+          
+          <h3>2. User Responsibilities</h3>
+          <p>You agree to use our services only for lawful purposes. You must not use our website to distribute malware, spam, or engage in any activity that could harm our reputation or operations.</p>
+          
+          <h3>3. Intellectual Property</h3>
+          <p>All content, designs, and materials created by JAARDESIGNLLC are the intellectual property of JAARDESIGNLLC unless otherwise agreed upon. You may not reproduce or redistribute any content without written permission.</p>
+          
+          <h3>4. Payments</h3>
+          <p>All payments for services must be made in accordance with the agreed terms. Late payments may result in suspension of services.</p>
+          
+          <h3>5. Limitation of Liability</h3>
+          <p>JAARDESIGNLLC is not liable for any damages resulting from the use or inability to use our services, including but not limited to loss of data or business interruption.</p>
+          
+          <h3>6. Privacy</h3>
+          <p>We respect your privacy. Please refer to our Privacy Policy for details on how we collect and use your information.</p>
+          
+          <h3>7. Changes to Terms</h3>
+          <p>We may update these Terms of Service from time to time. Continued use of our services after changes are posted constitutes your acceptance of the revised terms.</p>
+          
+          <h3>8. Contact</h3>
+          <p>If you have any questions about these terms, please contact us at info@jaardesign.com</p>
+        `,
+      },
+      cookies: {
+        title: 'Cookie Policy',
+        content: `
+          <p><strong>Effective Date: 9-30-2025</strong></p>
+          <p>This Cookie Policy explains how JAARDESIGNLLC uses cookies and similar technologies to recognize you when you visit our website. It explains what these technologies are and why we use them, as well as your rights to control their use.</p>
+          
+          <h3>1. What Are Cookies?</h3>
+          <p>Cookies are small data files that are placed on your device when you visit a website. They are widely used to make websites work more efficiently and to provide reporting information.</p>
+          
+          <h3>2. How We Use Cookies</h3>
+          <p>We use cookies to:</p>
+          <ul>
+            <li>Improve website functionality and performance</li>
+            <li>Analyze traffic and user behavior</li>
+            <li>Personalize content and ads</li>
+            <li>Enable social media features</li>
+          </ul>
+          
+          <h3>3. Types of Cookies We Use</h3>
+          <ul>
+            <li><strong>Essential Cookies:</strong> Necessary for the website to function properly.</li>
+            <li><strong>Analytics Cookies:</strong> Help us understand how visitors interact with our website.</li>
+            <li><strong>Marketing Cookies:</strong> Used to deliver relevant ads and track campaign performance.</li>
+            <li><strong>Third-Party Cookies:</strong> Set by external services like social media platforms or analytics providers.</li>
+          </ul>
+          
+          <h3>4. Managing Cookies</h3>
+          <p>You can control and manage cookies through your browser settings. Most browsers allow you to refuse or delete cookies. However, disabling cookies may affect the functionality of our website.</p>
+          
+          <h3>5. Changes to This Policy</h3>
+          <p>We may update this Cookie Policy from time to time. Any changes will be posted on this page with an updated effective date.</p>
+          
+          <h3>6. Contact Us</h3>
+          <p>If you have any questions about our use of cookies, please contact us at info@jaardesign.com</p>
+        `,
+      },
+    };
+
+    setModalContent(content[type]);
+    setShowModal(true);
+  };
+
   return (
     <div className="min-h-screen bg-[#121212] text-white overflow-hidden">
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setShowModal(false)}
+          />
+          <div className="relative bg-[#1a1a1a] rounded-2xl max-w-3xl w-full max-h-[80vh] overflow-hidden shadow-2xl border border-white/10">
+            <div className="sticky top-0 bg-[#1a1a1a] border-b border-white/10 p-6 flex items-center justify-between z-10">
+              <h2 className="text-2xl font-bold">{modalContent.title}</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div
+              className="p-6 overflow-y-auto max-h-[calc(80vh-88px)] policy-content"
+              dangerouslySetInnerHTML={{ __html: modalContent.content }}
+            />
+          </div>
+        </div>
+      )}
+
+      <style jsx global>{`
+        .policy-content h3 {
+          font-size: 1.25rem;
+          font-weight: bold;
+          margin-top: 1.5rem;
+          margin-bottom: 0.75rem;
+          color: #00a5e0;
+        }
+        .policy-content p {
+          margin-bottom: 1rem;
+          color: rgba(255, 255, 255, 0.8);
+          line-height: 1.6;
+        }
+        .policy-content ul {
+          margin-bottom: 1rem;
+          padding-left: 1.5rem;
+          list-style-type: disc;
+        }
+        .policy-content li {
+          margin-bottom: 0.5rem;
+          color: rgba(255, 255, 255, 0.7);
+          line-height: 1.6;
+        }
+        .policy-content strong {
+          color: rgba(255, 255, 255, 0.9);
+          font-weight: 600;
+        }
+      `}</style>
+
       {/* Header */}
       <header
         className={cn(
@@ -595,12 +788,6 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
-
-          {/* <div className="text-center mt-12">
-            <Button className="bg-transparent border border-white/20 hover:bg-white/10 text-white px-8 py-6 text-lg">
-              View All Projects
-            </Button>
-          </div> */}
         </div>
       </section>
 
@@ -676,7 +863,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className="bg-white/5 backdrop-blur-sm rounded-xl p-8 relative group"
+                className="bg-white/5 backdrop-blur-sm rounded-xl p-8 relative group flex flex-col"
               >
                 <div className="absolute -inset-1 bg-gradient-to-r from-[#ef3441] to-[#00a5e0] rounded-xl blur opacity-0 group-hover:opacity-30 transition-opacity duration-300 -z-10"></div>
 
@@ -695,9 +882,11 @@ export default function Home() {
                   </svg>
                 </div>
 
-                <p className="text-white/80 mb-8 italic">{testimonial.quote}</p>
+                <p className="text-white/80 mb-8 italic flex-grow">
+                  {testimonial.quote}
+                </p>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 mt-auto">
                   <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-lg font-bold">
                     {testimonial.name.charAt(0)}
                   </div>
@@ -918,9 +1107,10 @@ export default function Home() {
                 Action Oriented, Adaptable Approaches
               </p>
 
-              {/* <div className="flex gap-4">
+              <div className="flex gap-4">
                 <a
-                  href="#"
+                  href="http://instagram.com/jaardesign_"
+                  target="_blank"
                   className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#ef3441] transition-colors duration-300"
                 >
                   <svg
@@ -936,90 +1126,28 @@ export default function Home() {
                     />
                   </svg>
                 </a>
-
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#ef3441] transition-colors duration-300"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0px"
-                    y="0px"
-                    width="20"
-                    height="20"
-                    viewBox="0,0,256,256"
-                  >
-                    <g
-                      fill="#ffffff"
-                      fillRule="nonzero"
-                      stroke="none"
-                      strokeWidth="1"
-                      strokeLinecap="butt"
-                      strokeLinejoin="miter"
-                      strokeMiterlimit="10"
-                      strokeDasharray=""
-                      strokeDashoffset="0"
-                      fontFamily="none"
-                    >
-                      <g transform="scale(5.12,5.12)">
-                        <path d="M5.91992,6l14.66211,21.375l-14.35156,16.625h3.17969l12.57617,-14.57812l10,14.57813h12.01367l-15.31836,-22.33008l13.51758,-15.66992h-3.16992l-11.75391,13.61719l-9.3418,-13.61719zM9.7168,8h7.16406l23.32227,34h-7.16406z"></path>
-                      </g>
-                    </g>
-                  </svg>
-                </a>
-
-                <a
-                  href="#"
-                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#ef3441] transition-colors duration-300"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    x="0px"
-                    y="0px"
-                    width="20"
-                    height="20"
-                    viewBox="0,0,256,256"
-                  >
-                    <g
-                      fill="#ffffff"
-                      fillRule="nonzero"
-                      stroke="none"
-                      strokeWidth="1"
-                      strokeLinecap="butt"
-                      strokeLinejoin="miter"
-                      strokeMiterlimit="10"
-                      strokeDasharray=""
-                      strokeDashoffset="0"
-                      fontFamily="none"
-                    >
-                      <g transform="scale(5.12,5.12)">
-                        <path d="M44.89844,14.5c-0.39844,-2.19922 -2.29687,-3.80078 -4.5,-4.30078c-3.29687,-0.69922 -9.39844,-1.19922 -16,-1.19922c-6.59766,0 -12.79687,0.5 -16.09766,1.19922c-2.19922,0.5 -4.10156,2 -4.5,4.30078c-0.40234,2.5 -0.80078,6 -0.80078,10.5c0,4.5 0.39844,8 0.89844,10.5c0.40234,2.19922 2.30078,3.80078 4.5,4.30078c3.5,0.69922 9.5,1.19922 16.10156,1.19922c6.60156,0 12.60156,-0.5 16.10156,-1.19922c2.19922,-0.5 4.09766,-2 4.5,-4.30078c0.39844,-2.5 0.89844,-6.10156 1,-10.5c-0.20312,-4.5 -0.70312,-8 -1.20312,-10.5zM19,32v-14l12.19922,7z"></path>
-                      </g>
-                    </g>
-                  </svg>
-                </a>
-              </div> */}
+              </div>
             </div>
 
             <div>
               <h3 className="text-lg font-bold mb-6">Services</h3>
               <ul className="space-y-4">
-                <li className="text-white/70 hover:text-white transition-colors duration-300">
+                <li className="text-white/70 hover:text-white transition-colors duration-300 cursor-pointer">
                   Web Design
                 </li>
-                <li className="text-white/70 hover:text-white transition-colors duration-300">
+                <li className="text-white/70 hover:text-white transition-colors duration-300 cursor-pointer">
                   Digital Marketing
                 </li>
-                <li className="text-white/70 hover:text-white transition-colors duration-300">
+                <li className="text-white/70 hover:text-white transition-colors duration-300 cursor-pointer">
                   App Development
                 </li>
-                <li className="text-white/70 hover:text-white transition-colors duration-300">
+                <li className="text-white/70 hover:text-white transition-colors duration-300 cursor-pointer">
                   Brand Strategy
                 </li>
-                <li className="text-white/70 hover:text-white transition-colors duration-300">
+                <li className="text-white/70 hover:text-white transition-colors duration-300 cursor-pointer">
                   SEO
                 </li>
-                <li className="text-white/70 hover:text-white transition-colors duration-300">
+                <li className="text-white/70 hover:text-white transition-colors duration-300 cursor-pointer">
                   E-Commerce Solutions
                 </li>
               </ul>
@@ -1029,44 +1157,28 @@ export default function Home() {
               <h3 className="text-lg font-bold mb-6">Company</h3>
               <ul className="space-y-4">
                 <li>
-                  <a
-                    href="#"
+                  <button
+                    onClick={() => scrollTo(aboutRef)}
                     className="text-white/70 hover:text-white transition-colors duration-300"
                   >
                     About Us
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a
-                    href="#"
+                  <button
+                    onClick={() => scrollTo(workRef)}
                     className="text-white/70 hover:text-white transition-colors duration-300"
                   >
                     Our Work
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a
-                    href="#"
-                    className="text-white/70 hover:text-white transition-colors duration-300"
-                  >
-                    Careers
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-white/70 hover:text-white transition-colors duration-300"
-                  >
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
+                  <button
+                    onClick={() => scrollTo(contactRef)}
                     className="text-white/70 hover:text-white transition-colors duration-300"
                   >
                     Contact
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -1098,24 +1210,24 @@ export default function Home() {
             </p>
 
             <div className="flex gap-6 mt-4 md:mt-0">
-              <a
-                href="#"
+              <button
+                onClick={() => openModal('privacy')}
                 className="text-white/50 text-sm hover:text-white transition-colors duration-300"
               >
                 Privacy Policy
-              </a>
-              <a
-                href="#"
+              </button>
+              <button
+                onClick={() => openModal('terms')}
                 className="text-white/50 text-sm hover:text-white transition-colors duration-300"
               >
                 Terms of Service
-              </a>
-              <a
-                href="#"
+              </button>
+              <button
+                onClick={() => openModal('cookies')}
                 className="text-white/50 text-sm hover:text-white transition-colors duration-300"
               >
                 Cookies Policy
-              </a>
+              </button>
             </div>
           </div>
         </div>

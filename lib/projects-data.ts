@@ -6,10 +6,10 @@ export const projects = [
     website: "https://leighmrothschild.com"
   },
     {
-    title: "Palma Miami Beach",
-    category: "Business Website",
-    mainImage: "/palma.jpg",
-    website: "https://palmamiamibeach.com"
+    title: "Livana Soul Doula",
+    category: "Personal Website",
+    mainImage: "/livana.jpg",
+    website: "https://livanasouldoula.com"
   },
     {
     title: "Chaya Adamson",
