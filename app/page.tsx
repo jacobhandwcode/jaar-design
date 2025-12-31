@@ -108,7 +108,7 @@ export default function Home() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to send message');
+        throw new Error(data.error || 'Failed to send message. Please contact us at info@jaardesign.com.');
       }
 
       setFormStatus({
