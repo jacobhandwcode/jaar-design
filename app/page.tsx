@@ -113,7 +113,7 @@ export default function Home() {
 
       setFormStatus({
         type: 'success',
-        message: 'Thank you! Your message has been sent successfully.',
+        message: 'Thank you! We will contact you shortly.',
       });
       setFormData({ name: '', email: '', subject: '', message: '' });
     } catch (error) {
