@@ -20,6 +20,7 @@ import {
   Search,
   X,
   ShoppingBag,
+  Loader2,
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -43,6 +44,18 @@ export default function Home() {
 
   const [isScrolled, setIsScrolled] = useState(false);
 
+  // Contact form state
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+  const [formStatus, setFormStatus] = useState<{
+    type: 'idle' | 'loading' | 'success' | 'error';
+    message: string;
+  }>({ type: 'idle', message: '' });
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -65,10 +78,52 @@ export default function Home() {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const scrollTo = (ref: React.RefObject<HTMLDivElement>) => {
+  const scrollTo = (ref: React.RefObject<HTMLDivElement | null>) => {
     if (ref.current) {
       ref.current.scrollIntoView({ behavior: 'smooth' });
       setIsMenuOpen(false);
+    }
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormStatus({ type: 'loading', message: '' });
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send message');
+      }
+
+      setFormStatus({
+        type: 'success',
+        message: 'Thank you! Your message has been sent successfully.',
+      });
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (error) {
+      setFormStatus({
+        type: 'error',
+        message:
+          error instanceof Error
+            ? error.message
+            : 'Something went wrong. Please try again.',
+      });
     }
   };
 
@@ -848,13 +903,13 @@ export default function Home() {
                 name: 'Leigh Rothschild',
                 position: 'Patent Asset Management',
                 quote:
-                  'JAAR Design built a website that perfectly showcases my journey as an inventor. It’s clean, modern, and responsive, making it easy for visitors to explore my patents and projects. The site feels professional yet personal—exactly what I needed to highlight my career achievements in the best light.',
+                  "JAAR Design built a website that perfectly showcases my journey as an inventor. It's clean, modern, and responsive, making it easy for visitors to explore my patents and projects. The site feels professional yet personal—exactly what I needed to highlight my career achievements in the best light.",
               },
               {
                 name: 'Rosh Lowe',
                 position: 'MicDrop',
                 quote:
-                  'JAAR Design gave my website a complete makeover, and I couldn’t be happier. They really listened to my ideas and turned them into something professional, clean, and easy for my clients to use. It feels like my business finally has an online home that truly represents me.',
+                  "JAAR Design gave my website a complete makeover, and I couldn't be happier. They really listened to my ideas and turned them into something professional, clean, and easy for my clients to use. It feels like my business finally has an online home that truly represents me.",
               },
             ].map((testimonial, index) => (
               <motion.div
@@ -940,7 +995,12 @@ export default function Home() {
                   </div>
                   <div>
                     <h3 className="font-bold">Email Us</h3>
-                    <p className="text-white/70">info@jaardesign.com</p>
+                    <a
+                      href="mailto:info@jaardesign.com"
+                      className="text-white/70"
+                    >
+                      info@jaardesign.com
+                    </a>
                   </div>
                 </div>
 
@@ -950,7 +1010,9 @@ export default function Home() {
                   </div>
                   <div>
                     <h3 className="font-bold">Call Us</h3>
-                    <p className="text-white/70">+1 (305) 733-1160</p>
+                    <a href="tel:13057331160" className="text-white/70">
+                      +1 (305) 733-1160
+                    </a>
                   </div>
                 </div>
               </div>
@@ -967,74 +1029,123 @@ export default function Home() {
 
               <h3 className="text-2xl font-bold mb-6">Send us a message</h3>
 
-              <form className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
+              {formStatus.type === 'success' ? (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="h-8 w-8 text-green-500" />
+                  </div>
+                  <h4 className="text-xl font-bold mb-2">Message Sent!</h4>
+                  <p className="text-white/70 mb-6">{formStatus.message}</p>
+                  <Button
+                    onClick={() =>
+                      setFormStatus({ type: 'idle', message: '' })
+                    }
+                    className="bg-[#00a5e0] hover:bg-[#00a5e0]/90 text-white"
+                  >
+                    Send Another Message
+                  </Button>
+                </div>
+              ) : (
+                <form className="space-y-6" onSubmit={handleSubmit}>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="name"
+                        className="text-sm font-medium text-white/70"
+                      >
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-lg focus:outline-none focus:border-[#00a5e0] text-white transition-colors"
+                        placeholder="Your name"
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label
+                        htmlFor="email"
+                        className="text-sm font-medium text-white/70"
+                      >
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-lg focus:outline-none focus:border-[#00a5e0] text-white transition-colors"
+                        placeholder="Your email"
+                        required
+                      />
+                    </div>
+                  </div>
+
                   <div className="space-y-2">
                     <label
-                      htmlFor="name"
+                      htmlFor="subject"
                       className="text-sm font-medium text-white/70"
                     >
-                      Name
+                      Subject
                     </label>
                     <input
                       type="text"
-                      id="name"
-                      className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00a5e0] text-white"
-                      placeholder="Your name"
+                      id="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-lg focus:outline-none focus:border-[#00a5e0] text-white transition-colors"
+                      placeholder="Subject"
+                      required
                     />
                   </div>
 
                   <div className="space-y-2">
                     <label
-                      htmlFor="email"
+                      htmlFor="message"
                       className="text-sm font-medium text-white/70"
                     >
-                      Email
+                      Message
                     </label>
-                    <input
-                      type="email"
-                      id="email"
-                      className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00a5e0] text-white"
-                      placeholder="Your email"
-                    />
+                    <textarea
+                      id="message"
+                      rows={5}
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-lg focus:outline-none focus:border-[#00a5e0] text-white resize-none transition-colors"
+                      placeholder="Your message"
+                      required
+                    ></textarea>
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <label
-                    htmlFor="subject"
-                    className="text-sm font-medium text-white/70"
+                  {formStatus.type === 'error' && (
+                    <div className="p-4 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm">
+                      {formStatus.message}
+                    </div>
+                  )}
+
+                  <Button
+                    type="submit"
+                    disabled={formStatus.type === 'loading'}
+                    className="w-full bg-[#ef3441] hover:bg-[#ef3441]/90 text-white py-6 text-lg relative overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00a5e0] text-white"
-                    placeholder="Subject"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label
-                    htmlFor="message"
-                    className="text-sm font-medium text-white/70"
-                  >
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    rows={5}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00a5e0] text-white resize-none"
-                    placeholder="Your message"
-                  ></textarea>
-                </div>
-
-                <Button className="w-full bg-[#ef3441] hover:bg-[#ef3441]/90 text-white py-6 text-lg relative overflow-hidden group">
-                  <span className="relative z-10">Send Message</span>
-                  <span className="absolute inset-0 bg-[#00a5e0] transform translate-y-full transition-transform duration-300 group-hover:translate-y-0"></span>
-                </Button>
-              </form>
+                    <span className="relative z-10 flex items-center justify-center">
+                      {formStatus.type === 'loading' ? (
+                        <>
+                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        'Send Message'
+                      )}
+                    </span>
+                    <span className="absolute inset-0 bg-[#00a5e0] transform translate-y-full transition-transform duration-300 group-hover:translate-y-0"></span>
+                  </Button>
+                </form>
+              )}
             </motion.div>
           </div>
         </div>
@@ -1192,7 +1303,7 @@ export default function Home() {
               <form className="space-y-4">
                 <input
                   type="email"
-                  className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00a5e0] text-white"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/10 rounded-lg text-white"
                   placeholder="Your email"
                 />
 
